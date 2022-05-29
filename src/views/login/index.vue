@@ -149,6 +149,7 @@ export default {
             duration: 2000,
             type: 'success'
           })
+          this.$router.push('/')
         } finally {
           // 无论请求成功还是失败了，都关闭动画
           this.loading = false

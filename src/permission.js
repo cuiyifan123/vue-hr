@@ -1,5 +1,38 @@
-// import router from './router'
-// import store from './store'
+import router from './router'
+import store from './store'
+import NProgress from 'nprogress' // progress bar
+import 'nprogress/nprogress.css' // progress bar style
+const whiteList = ['/login', '/404']
+// drawio文件下：权限流程1图
+router.beforeEach(async(to, from, next) => {
+  NProgress.start()
+  const { token, name } = store.getters
+  // 判断是否有token
+  if (token) {
+    if (!name) {
+      await store.dispatch({ type: 'user/getUserInfo', payload: null })
+    }
+    if (to.path === '/login') {
+      NProgress.done()
+      next(from.path)
+    } else {
+      next()
+    }
+  } else {
+    // 没有token查看去的页面是否在白名单上面，如果在则放行
+    if (whiteList.includes(to.path)) {
+      next()
+    } else {
+      NProgress.done()
+      // 不在白名单，并且没有token滚去登录页
+      next('/login')
+    }
+  }
+})
+router.afterEach(() => {
+  NProgress.done()
+})
+
 // import { Message } from 'element-ui'
 // import NProgress from 'nprogress' // progress bar
 // import 'nprogress/nprogress.css' // progress bar style

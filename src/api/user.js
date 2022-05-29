@@ -13,7 +13,7 @@ export function loginApi(data) {
   })
 }
 
-export function getInfoApi(token) {
+export function getInfoApi() {
   return request({
     url: '/sys/profile',
     method: 'post'
@@ -27,3 +27,14 @@ export function logoutApi() {
   })
 }
 
+/**
+ *
+ * @param id 用户id
+ * @returns {*} 请求函数
+ */
+export function getUserDetailById(id) {
+  return request({
+    url: `/sys/user/${id}`,
+    method: 'get'
+  })
+}
