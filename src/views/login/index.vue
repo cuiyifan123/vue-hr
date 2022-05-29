@@ -70,8 +70,6 @@
 
 <script>
 import { validMobile } from '@/utils/validate'
-import { to } from '@/utils/await-to.js'
-import { loginApi, getInfoApi } from '@/api/user.js'
 
 export default {
   name: 'Login',
@@ -115,6 +113,7 @@ export default {
   watch: {
     $route: {
       handler: function(route) {
+        console.log(this.redirect)
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
@@ -149,7 +148,9 @@ export default {
             duration: 2000,
             type: 'success'
           })
-          this.$router.push('/')
+          // 判断是不是重定向过来的，如果是则重定向回去，不是则去首页
+          const to = this.redirect || '/'
+          this.$router.push(to)
         } finally {
           // 无论请求成功还是失败了，都关闭动画
           this.loading = false

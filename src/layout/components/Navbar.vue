@@ -62,7 +62,7 @@ export default {
           // 派发事件清除token和用户信息
           await this.$store.dispatch({ type: 'user/userLogout', payload: null })
           // push到登录页
-          this.$router.push(`/login`)
+          this.$router.push({ path: '/login', query: { redirect: this.$route.fullPath }})
           this.$message('退出登录成功')
         })
         .catch(() => {
