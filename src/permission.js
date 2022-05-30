@@ -1,7 +1,8 @@
 import router from './router'
 import store from './store'
 import NProgress from 'nprogress' // progress bar
-import 'nprogress/nprogress.css' // progress bar style
+import 'nprogress/nprogress.css'
+import getPageTitle from '@/utils/get-page-title.js' // progress bar style
 const whiteList = ['/login', '/404']
 // drawio文件下：权限流程1图
 router.beforeEach(async(to, from, next) => {
@@ -33,9 +34,14 @@ router.beforeEach(async(to, from, next) => {
     }
   }
 })
+router.beforeEach((to, from, next) => {
+  document.title = getPageTitle(to.meta.title)
+  next()
+})
 router.afterEach(() => {
   NProgress.done()
 })
+
 // import { Message } from 'element-ui'
 // import NProgress from 'nprogress' // progress bar
 // import 'nprogress/nprogress.css' // progress bar style
