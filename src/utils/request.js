@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import store from '@/store'
+import router from '@/router'
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
@@ -28,7 +29,13 @@ service.interceptors.response.use((response) => {
     return Promise.reject(new Error(response.data.message))
   }
   return response.data
-}, (reason) => {
-  console.log(reason)
+}, async(reason) => {
+  // 如果状态码为401，表示token过期了，重定向到登录页
+  if (reason.response?.status === 401) {
+    await store.dispatch({ type: 'user/userLogout', payload: null })
+    // 但是页面刷新是在根页面的，导致传递过去的from是 /首页，所以需要获取历史记录传递给登录页
+    const redirect = location.href.replace(/.+#/g, '')
+    router.push({ path: '/login', query: { redirect }})
+  }
 })
 export default service

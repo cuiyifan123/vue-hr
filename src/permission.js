@@ -10,7 +10,11 @@ router.beforeEach(async(to, from, next) => {
   // 判断是否有token
   if (token) {
     if (!name) {
-      await store.dispatch({ type: 'user/getUserInfo', payload: null })
+      try {
+        await store.dispatch({ type: 'user/getUserInfo', payload: null })
+      } catch (e) {
+        console.log(e)
+      }
     }
     if (to.path === '/login') {
       NProgress.done()
@@ -32,7 +36,6 @@ router.beforeEach(async(to, from, next) => {
 router.afterEach(() => {
   NProgress.done()
 })
-
 // import { Message } from 'element-ui'
 // import NProgress from 'nprogress' // progress bar
 // import 'nprogress/nprogress.css' // progress bar style
