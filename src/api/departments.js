@@ -14,6 +14,7 @@ export function addDepartment(data) {
     data
   })
 }
+
 export function getDepartmentById(id) {
   return request({
     method: 'get',
@@ -26,5 +27,12 @@ export function updateDepartment(data) {
     method: 'put',
     url: `/company/department/${data.id}`,
     data
+  })
+}
+
+export function removeDepartment(id) {
+  return request({
+    method: 'delete',
+    url: `/company/department/${id}`
   })
 }

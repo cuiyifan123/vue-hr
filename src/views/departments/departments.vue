@@ -10,7 +10,7 @@
           style="height: 40px"
         >
           <el-col :span="20">
-            <svg-icon icon-class="hongbao" />
+            <svg-icon icon-class="hongbao"/>
             <span>江苏传智播客教育科技股份有限公司</span>
           </el-col>
           <el-col :span="4">
@@ -20,11 +20,12 @@
               <!-- 下拉菜单 element -->
               <el-col>
                 <el-dropdown>
-                  <span> 操作<i class="el-icon-arrow-down" /> </span>
+                  <span> 操作<i class="el-icon-arrow-down"/> </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
                       @click.native="showAdd('')"
-                    >添加子部门</el-dropdown-item>
+                    >添加子部门
+                    </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </el-col>
@@ -50,14 +51,22 @@
                   <!-- 下拉菜单 element -->
                   <el-col>
                     <el-dropdown>
-                      <span> 操作<i class="el-icon-arrow-down" /> </span>
+                      <span> 操作<i class="el-icon-arrow-down"/> </span>
                       <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item
                           @click.native="showAdd(scope.data.id)"
-                        >添加子部门</el-dropdown-item>
+                        >添加子部门
+                        </el-dropdown-item>
                         <el-dropdown-item
                           @click.native="showEdit(scope.data.id)"
-                        >修改部门</el-dropdown-item>
+                        >修改部门
+                        </el-dropdown-item>
+                        <!-- 当没有children的时候才能删除-->
+                        <el-dropdown-item
+                          v-if="scope.data.children.length === 0"
+                          @click.native="remove(scope.data.id)"
+                        >删除部门
+                        </el-dropdown-item>
                       </el-dropdown-menu>
                     </el-dropdown>
                   </el-col>
@@ -75,7 +84,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <addOrEdit v-if="isShowAddDialog" :id="curId" :is-edit="isEdit" />
+      <addOrEdit v-if="isShowAddDialog" :id="curId" :is-edit="isEdit"/>
     </el-dialog>
     <el-dialog
       title="编辑"
@@ -84,14 +93,15 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <addOrEdit v-if="isShowEditDialog" :id="curId" :is-edit="isEdit" />
+      <addOrEdit v-if="isShowEditDialog" :id="curId" :is-edit="isEdit"/>
     </el-dialog>
   </div>
 </template>
 <script>
-import { getDepts } from '@/api/departments.js'
+import { getDepts, removeDepartment } from '@/api/departments.js'
 import { dataToTree } from '@/utils'
 import addOrEdit from './components/addOrEdit'
+
 export default {
   components: {
     addOrEdit
@@ -109,9 +119,7 @@ export default {
   async created() {
     await this.loadDepts()
     this.$on('closeDialog', () => {
-      this.loadDepts()
-      this.isShowAddDialog = false
-      this.isShowEditDialog = false
+      this.close()
     })
   },
   methods: {
@@ -132,6 +140,20 @@ export default {
       this.isShowEditDialog = true
       this.curId = id
       this.isEdit = true
+    },
+    async remove(id) {
+      try {
+        const res = await removeDepartment(id)
+        this.$message.success(res.message)
+        this.close()
+      } catch (e) {
+        this.$message.error(e.message)
+      }
+    },
+    close() {
+      this.loadDepts()
+      this.isShowAddDialog = false
+      this.isShowEditDialog = false
     }
   }
 }
