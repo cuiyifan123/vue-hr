@@ -17,8 +17,8 @@ export function parseTime(time, cFormat) {
   if (typeof time === 'object') {
     date = time
   } else {
-    if ((typeof time === 'string')) {
-      if ((/^[0-9]+$/.test(time))) {
+    if (typeof time === 'string') {
+      if (/^[0-9]+$/.test(time)) {
         // support "1548221490638"
         time = parseInt(time)
       } else {
@@ -28,7 +28,7 @@ export function parseTime(time, cFormat) {
       }
     }
 
-    if ((typeof time === 'number') && (time.toString().length === 10)) {
+    if (typeof time === 'number' && time.toString().length === 10) {
       time = time * 1000
     }
     date = new Date(time)
@@ -45,7 +45,9 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') {
+      return ['日', '一', '二', '三', '四', '五', '六'][value]
+    }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -105,7 +107,7 @@ export function param2Obj(url) {
   }
   const obj = {}
   const searchArr = search.split('&')
-  searchArr.forEach(v => {
+  searchArr.forEach((v) => {
     const index = v.indexOf('=')
     if (index !== -1) {
       const name = v.substring(0, index)
@@ -115,3 +117,49 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+export function dataToTree(dataList, id, list) {
+  for (const item of dataList) {
+    if (item.pid === id) {
+      list.push(item)
+    }
+  }
+  for (const item of list) {
+    item.children = []
+    dataToTree(dataList, item.id, item.children)
+  }
+  return list
+}
+
+// export function dataToTree(list) {
+//   // 1. 定义两个变量
+//   const treeList = []
+//   const map = {}
+
+//   // 2. 建立一个映射关系，并给每个元素补充children属性.
+//   // 映射关系: 目的是让我们能通过id快速找到对应的元素
+//   // 补充children：让后边的计算更方便
+//   list.forEach(item => {
+//     if (!item.children) {
+//       item.children = []
+//     }
+//     map[item.id] = item
+//   })
+
+//   // 循环
+//   list.forEach(item => {
+//     // 对于每一个元素来说，先找它的上级
+//     //    如果能找到，说明它有上级，则要把它添加到上级的children中去
+//     //    如果找不到，说明它没有上级，直接添加到 treeList
+//     const parent = map[item.pid]
+//     // 如果存在上级则表示item不是最顶层的数据
+//     if (parent) {
+//       parent.children.push(item)
+//     } else {
+//       // 如果不存在上级 则是顶层数据,直接添加
+//       treeList.push(item)
+//     }
+//   })
+//   // 返回
+//   return treeList
+// }

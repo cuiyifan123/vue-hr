@@ -1,4 +1,4 @@
-import Layout from '@/layout/index.vue'
+import Layout from '@/layout'
 
 export default {
   path: '/approvals',
@@ -7,6 +7,6 @@ export default {
     path: '',
     name: 'approvals',
     component: () => import('@/views/approvals/approvals.vue'),
-    meta: { title: 'approvals', icon: 'approvals' }
+    meta: { title: '审批管理', icon: 'tree-table' }
   }]
 }

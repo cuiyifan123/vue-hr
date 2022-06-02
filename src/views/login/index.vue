@@ -43,7 +43,7 @@
           name="password"
           tabindex="2"
           auto-complete="on"
-          @keyup.enter.native="handleLogin"
+          @keyup.enter.native="hLogin"
         />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
@@ -51,13 +51,14 @@
       </el-form-item>
 
       <el-button
-        :loading="loading"
         class="loginBtn"
+        :loading="loading"
         type="primary"
         style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="handleLogin"
+        @click.native.prevent="hLogin"
       >登录
       </el-button>
+      <!-- <el-button class="loginBtn" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="testGetUserInfo">获取用户信息</el-button> -->
 
       <div class="tips">
         <span style="margin-right:20px;">账号: 13800000002</span>
@@ -69,41 +70,45 @@
 </template>
 
 <script>
+// import { getUserInfo } from '@/api/user'
 import { validMobile } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
+    // 参数1: 没用 规则对象
+    // 参数2: 校验项的数据值
+    // 参数3: 决定是否通过校验的回调函数
     const validateMobile = (rule, value, callback) => {
-      // 将空格去掉
-      value = value.replace(/\s/g, '')
-      if (value === '') {
-        callback('手机号不能为空')
-        return
-      }
       if (!validMobile(value)) {
-        callback(new Error('手机号格式不正确'))
+        callback(new Error('请输入正确的手机号'))
       } else {
         callback()
       }
     }
-    const validatePassword = (rule, value, callback) => {
-      // 将空格去掉
-      value = value.replace(/\s/g, '')
-      if (value.length < 6 || value.length > 16) {
-        callback(new Error('密码的长度在 6 ~ 16 位之间'))
-      } else {
-        callback()
-      }
-    }
+    // const validatePassword = (rule, value, callback) => {
+    //   if (value.length < 6) {
+    //     callback(new Error('The password can not be less than 6 digits'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       loginForm: {
         mobile: '13800000002',
         password: '123456'
       },
       loginRules: {
-        mobile: [{ required: true, trigger: 'blur', validator: validateMobile }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        mobile: [
+          { required: true, message: '手机号不能为空', trigger: ['blur', 'change'] },
+          // { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: ['blur', 'change'] }
+          // 学习花裤衩子的封装思想
+          { validator: validateMobile, trigger: ['blur', 'change'] }
+        ],
+        password: [
+          { required: true, message: '密码不能为空', trigger: ['blur', 'change'] },
+          { min: 6, max: 16, message: '密码的长度为 6 ~ 16 位之间', trigger: ['blur', 'change'] }
+        ]
       },
       loading: false,
       passwordType: 'password',
@@ -129,33 +134,47 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(async valid => {
-        // 表单验证没有通过直接返回，不做处理
+    hLogin() {
+      this.$refs.loginForm.validate(valid => {
         if (!valid) return
-        try {
-          // 开启请求动画
-          this.loading = true
-          // 获取actions返回的请求结果，并提示用户
-          /*
-          *   为什么不在vuex里面做提示？
-          *       从业务角度来说都可以实现，但是actions就是处理异步的，从语义上来说不适合做其他业务处理，所以不在actions提示用户
-          * */
-          const res = await this.$store.dispatch({ type: 'user/userLogin', payload: this.loginForm })
-          this.$message({
-            message: res.message,
-            duration: 2000,
-            type: 'success'
-          })
-          // 判断是不是重定向过来的，如果是则重定向回去，不是则去首页
-          const to = this.redirect || '/'
-          this.$router.push(to)
-        } finally {
-          // 无论请求成功还是失败了，都关闭动画
-          this.loading = false
-        }
+
+        this.doLogin()
       })
+    },
+    async doLogin() {
+      // 处理异常的原则: 业务在哪里 异常就在哪里处理
+      try {
+        // // 通过校验后发请求
+        // const res = await login(this.loginForm)
+        // // console.log('登录成功的结果:', res)
+
+        // // 调用 mutations 的 updateToken 存储即可
+        // this.$store.commit('user/updateToken', res.data)
+        const res = await this.$store.dispatch({ type: 'user/userLogin', payload: this.loginForm })
+
+        // 提醒用户成功
+        this.$message.success(res.message)
+
+        // 跳转到首页
+        // 获取路由参数: $route.query 查询参数   $route.params 参数
+        // console.log(this.$route)
+        this.$router.push(this.redirect || '/')
+
+        // if (登录成功) {
+        //   提醒用户成功
+        // } else {
+        //   提醒用户失败
+        // }
+      } catch (e) {
+        // console.log('登录失败的结果:', e)
+        // 提醒用失败
+        this.$message.success(e.message)
+      }
     }
+    // async testGetUserInfo() {
+    //   const res = await getUserInfo()
+    //   console.log('获取用户信息:', res)
+    // }
   }
 }
 </script>
@@ -176,6 +195,9 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  // @ 表示 src, 但是在样式中必须加 ~
+  background-image: url('~@/assets/common/login.jpg'); // 设置背景图片
+  background-position: center; // 将图片位置设置为充满整个屏幕
   .el-input {
     display: inline-block;
     height: 47px;
@@ -183,26 +205,19 @@ $cursor: #fff;
 
     input {
       background: transparent;
-      border: 0;
+      border: 0px;
       -webkit-appearance: none;
-      border-radius: 0;
+      border-radius: 0px;
       padding: 12px 5px 12px 15px;
       color: $light_gray;
       height: 47px;
       caret-color: $cursor;
 
       &:-webkit-autofill {
-        box-shadow: 0 0 0 1000px $bg inset !important;
+        box-shadow: 0 0 0px 1000px $bg inset !important;
         -webkit-text-fill-color: $cursor !important;
       }
     }
-  }
-
-  .loginBtn {
-    background: #407ffe;
-    height: 64px;
-    line-height: 32px;
-    font-size: 24px;
   }
 
   .el-form-item {
@@ -210,6 +225,13 @@ $cursor: #fff;
     background: rgba(255, 255, 255, 0.7);
     border-radius: 5px;
     color: #454545;
+  }
+
+  .loginBtn {
+    background: #407ffe;
+    height: 64px;
+    line-height: 32px;
+    font-size: 24px;
   }
 
   .el-form-item__error {
@@ -221,12 +243,12 @@ $cursor: #fff;
 <style lang="scss" scoped>
 $bg: #2d3a4b;
 $dark_gray: #889aa4;
-$light_gray: #68b0fe;
+$light_gray: #eee;
 
 .login-container {
   min-height: 100%;
   width: 100%;
-  background: url("~@/assets/common/login.jpg") 50% 50% no-repeat;
+  background-color: $bg;
   overflow: hidden;
 
   .login-form {
@@ -264,7 +286,7 @@ $light_gray: #68b0fe;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0 auto 40px auto;
+      margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
     }

@@ -1,4 +1,4 @@
-import Layout from '@/layout/index.vue'
+import Layout from '@/layout'
 
 export default {
   path: '/permissions',
@@ -7,6 +7,6 @@ export default {
     path: '',
     name: 'permissions',
     component: () => import('@/views/permissions/permissions.vue'),
-    meta: { title: 'permissions', icon: 'permissions' }
+    meta: { title: '权限管理', icon: 'lock' }
   }]
 }

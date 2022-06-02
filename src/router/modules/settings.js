@@ -1,4 +1,4 @@
-import Layout from '@/layout/index.vue'
+import Layout from '@/layout'
 
 export default {
   path: '/settings',
@@ -7,6 +7,6 @@ export default {
     path: '',
     name: 'settings',
     component: () => import('@/views/settings/settings.vue'),
-    meta: { title: 'settings', icon: 'settings' }
+    meta: { title: '公司设置', icon: 'settings' }
   }]
 }

@@ -1,9 +1,9 @@
 <template>
-  <div class="department-container">
+  <div class="permissions-container">
     <div class="app-container">
       <el-card>
         <!-- 具体页面结构 -->
-        permissions
+        权限管理
       </el-card>
     </div>
   </div>
