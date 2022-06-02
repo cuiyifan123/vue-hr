@@ -84,7 +84,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <addOrEdit v-if="isShowAddDialog" :id="curId" :is-edit="isEdit"/>
+      <addOrEdit v-if="isShowAddDialog" :originList="originList" :id="curId" :is-edit="isEdit"/>
     </el-dialog>
     <el-dialog
       title="编辑"
@@ -93,7 +93,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <addOrEdit v-if="isShowEditDialog" :id="curId" :is-edit="isEdit"/>
+      <addOrEdit v-if="isShowEditDialog" :originList="originList" :id="curId" :is-edit="isEdit"/>
     </el-dialog>
   </div>
 </template>
@@ -113,7 +113,8 @@ export default {
       isShowAddDialog: false,
       isShowEditDialog: false,
       curId: '',
-      isEdit: false
+      isEdit: false,
+      originList: []
     }
   },
   async created() {
@@ -125,8 +126,8 @@ export default {
   methods: {
     async loadDepts() {
       const res = await getDepts()
-      console.log(res)
       res.data.depts.shift()
+      this.originList = res.data.depts
       this.depts = dataToTree(res.data.depts, '', [])
     },
     //  控制 添加 部门弹窗的函数
