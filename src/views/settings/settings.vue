@@ -56,7 +56,7 @@
           </el-tab-pane>
         </el-tabs>
         <el-dialog
-          title="编辑弹层"
+          :title="isEdit ? '编辑弹层' : '添加弹层'"
           :close-on-click-modal="false"
           :close-on-press-escape="false"
           :visible.sync="showDialog"
@@ -167,6 +167,7 @@ export default {
       this.showDialog = status
     },
     handleSubmit() {
+      // 点击发送请求按钮，根据 isEdit来判断是发送修改角色还是新增角色
       this.isEdit ? this.doEdit() : this.doAdd()
     },
     // 点击新增按钮处理函数
@@ -184,7 +185,7 @@ export default {
     },
     // dialog关闭后，清空表单数据
     dialogClosed() {
-      // 清空表单
+      // 重置表单
       this.$refs.roleForm.resetFields()
       // 清空 roleForm数据
       this.roleForm = { name: '', description: '' }
