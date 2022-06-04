@@ -11,6 +11,7 @@
                 icon="el-icon-plus"
                 size="small"
                 type="primary"
+                @click="changeIsShwoDialog(true)"
               >新增角色
               </el-button>
             </el-row>
@@ -50,19 +51,67 @@
             </el-row>
           </el-tab-pane>
         </el-tabs>
+        <el-dialog
+          title="编辑弹层"
+          :close-on-click-modal="false"
+          :close-on-press-escape="false"
+          :visible.sync="showDialog"
+        >
+          <el-form
+            ref="roleForm"
+            :model="roleForm"
+            :rules="rules"
+            label-width="100px"
+          >
+            <el-form-item label="角色名称" prop="name">
+              <el-input v-model="roleForm.name" />
+            </el-form-item>
+            <el-form-item label="角色描述" prop="description">
+              <el-input v-model="roleForm.description" />
+            </el-form-item>
+          </el-form>
+          <!-- 底部 -->
+          <el-row slot="footer" type="flex" justify="center">
+            <el-col :span="6">
+              <el-button
+                size="small"
+                @click="changeIsShwoDialog(false)"
+              >取消</el-button>
+              <el-button
+                size="small"
+                type="primary"
+                @click="handleSubmit"
+              >确定</el-button>
+            </el-col>
+          </el-row>
+        </el-dialog>
       </el-card>
     </div>
   </div>
 </template>
 <script>
-import { getRoles, removeRole } from '@/api/roles.js'
+import { addRole, getRoles, removeRole } from '@/api/roles.js'
 
 export default {
   data() {
     return {
       pageParams: { page: 1, pagesize: 2 },
       rows: [],
-      total: 0
+      total: 0,
+      // 控制dialog的显示与隐藏
+      showDialog: false,
+      roleForm: {
+        name: '',
+        description: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '角色名称为必填项', trigger: 'blur' }
+        ],
+        description: [
+          { required: true, message: '角色名称为必填项', trigger: 'blur' }
+        ]
+      }
     }
   },
   created() {
@@ -106,6 +155,42 @@ export default {
           }
         })
         .catch(() => {})
+    },
+    // 改变是否显示dialog对话框 ”状态“ 的函数
+    changeIsShwoDialog(status) {
+      this.showDialog = status
+    },
+    handleSubmit() {
+      // 发送请求添加角色
+      // 1、兜底校验
+      this.$refs.roleForm.validate(async(valide) => {
+        if (!valide) return
+        try {
+          const res = await addRole(this.roleForm)
+          // 提示用户
+          this.$message.success(res.message)
+          // 清空表单
+          this.$refs.roleForm.resetFields()
+          // 关闭 dialog
+          this.changeIsShwoDialog(false)
+          // 需求：添加成功后，跳转到最后一页
+          /*
+              解决思路：
+                数据的总数量( total ) / 每页需要显示多少条数据( params.pageSize ) 向上取整 = 最后一页的页码
+                但是有可能 total / pageSize = 0 了,则需要让total +1
+          */
+          if (this.total % this.pageParams.pagesize === 0) {
+            this.total++
+          }
+          this.pageParams.page = Math.ceil(
+            this.total / this.pageParams.pagesize
+          )
+          // 重新获取数据
+          this.loadRoles()
+        } catch (e) {
+          this.$message.success(e.message)
+        }
+      })
     }
   }
 }

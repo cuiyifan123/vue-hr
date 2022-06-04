@@ -15,3 +15,11 @@ export function removeRole(id) {
     url: `/sys/role/${id}`
   })
 }
+// 添加角色
+export function addRole(data) {
+  return request({
+    method: 'post',
+    url: `/sys/role`,
+    data
+  })
+}

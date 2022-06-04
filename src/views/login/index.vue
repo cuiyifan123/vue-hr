@@ -8,7 +8,6 @@
       auto-complete="on"
       label-position="left"
     >
-
       <div class="title-container">
         <h3 class="title">
           <img src="@/assets/common/login-logo.png" alt="">
@@ -17,7 +16,7 @@
 
       <el-form-item prop="mobile">
         <span class="svg-container">
-          <svg-icon icon-class="user"/>
+          <svg-icon icon-class="user" />
         </span>
         <el-input
           ref="mobile"
@@ -32,7 +31,7 @@
 
       <el-form-item prop="password">
         <span class="svg-container">
-          <svg-icon icon-class="password"/>
+          <svg-icon icon-class="password" />
         </span>
         <el-input
           :key="passwordType"
@@ -46,7 +45,9 @@
           @keyup.enter.native="hLogin"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"/>
+          <svg-icon
+            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
+          />
         </span>
       </el-form-item>
 
@@ -54,17 +55,16 @@
         class="loginBtn"
         :loading="loading"
         type="primary"
-        style="width:100%;margin-bottom:30px;"
+        style="width: 100%; margin-bottom: 30px"
         @click.native.prevent="hLogin"
       >登录
       </el-button>
       <!-- <el-button class="loginBtn" :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="testGetUserInfo">获取用户信息</el-button> -->
 
       <div class="tips">
-        <span style="margin-right:20px;">账号: 13800000002</span>
+        <span style="margin-right: 20px">账号: 13800000002</span>
         <span> 密码: 123456</span>
       </div>
-
     </el-form>
   </div>
 </template>
@@ -100,14 +100,27 @@ export default {
       },
       loginRules: {
         mobile: [
-          { required: true, message: '手机号不能为空', trigger: ['blur', 'change'] },
+          {
+            required: true,
+            message: '手机号不能为空',
+            trigger: ['blur', 'change']
+          },
           // { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号', trigger: ['blur', 'change'] }
           // 学习花裤衩子的封装思想
           { validator: validateMobile, trigger: ['blur', 'change'] }
         ],
         password: [
-          { required: true, message: '密码不能为空', trigger: ['blur', 'change'] },
-          { min: 6, max: 16, message: '密码的长度为 6 ~ 16 位之间', trigger: ['blur', 'change'] }
+          {
+            required: true,
+            message: '密码不能为空',
+            trigger: ['blur', 'change']
+          },
+          {
+            min: 6,
+            max: 16,
+            message: '密码的长度为 6 ~ 16 位之间',
+            trigger: ['blur', 'change']
+          }
         ]
       },
       loading: false,
@@ -135,7 +148,7 @@ export default {
       })
     },
     hLogin() {
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate((valid) => {
         if (!valid) return
 
         this.doLogin()
@@ -150,7 +163,10 @@ export default {
 
         // // 调用 mutations 的 updateToken 存储即可
         // this.$store.commit('user/updateToken', res.data)
-        const res = await this.$store.dispatch({ type: 'user/userLogin', payload: this.loginForm })
+        const res = await this.$store.dispatch({
+          type: 'user/userLogin',
+          payload: this.loginForm
+        })
 
         // 提醒用户成功
         this.$message.success(res.message)
@@ -235,7 +251,7 @@ $cursor: #fff;
   }
 
   .el-form-item__error {
-    color: #fff
+    color: #fff;
   }
 }
 </style>
