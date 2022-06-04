@@ -11,7 +11,7 @@
                 icon="el-icon-plus"
                 size="small"
                 type="primary"
-                @click="changeIsShwoDialog(true)"
+                @click="handleAdd()"
               >新增角色
               </el-button>
             </el-row>
@@ -23,7 +23,11 @@
               <el-table-column label="操作" width="300">
                 <template v-slot="{ row }">
                   <el-button size="small" type="success">分配权限</el-button>
-                  <el-button size="small" type="primary">编辑</el-button>
+                  <el-button
+                    size="small"
+                    type="primary"
+                    @click="handleEdit(row)"
+                  >编辑</el-button>
                   <el-button
                     size="small"
                     type="danger"
@@ -56,6 +60,7 @@
           :close-on-click-modal="false"
           :close-on-press-escape="false"
           :visible.sync="showDialog"
+          @closed="dialogClosed"
         >
           <el-form
             ref="roleForm"
@@ -90,7 +95,7 @@
   </div>
 </template>
 <script>
-import { addRole, getRoles, removeRole } from '@/api/roles.js'
+import { addRole, getRoles, removeRole, updateRole } from '@/api/roles.js'
 
 export default {
   data() {
@@ -111,7 +116,8 @@ export default {
         description: [
           { required: true, message: '角色名称为必填项', trigger: 'blur' }
         ]
-      }
+      },
+      isEdit: false
     }
   },
   created() {
@@ -161,6 +167,29 @@ export default {
       this.showDialog = status
     },
     handleSubmit() {
+      this.isEdit ? this.doEdit() : this.doAdd()
+    },
+    // 点击新增按钮处理函数
+    handleAdd() {
+      this.isEdit = false
+      // dialog显示
+      this.changeIsShwoDialog(true)
+    },
+    //  点击编辑按钮处理函数
+    handleEdit(row) {
+      this.isEdit = true
+      // dialog显示
+      this.changeIsShwoDialog(true)
+      this.roleForm = { ...row }
+    },
+    // dialog关闭后，清空表单数据
+    dialogClosed() {
+      // 清空表单
+      this.$refs.roleForm.resetFields()
+      // 清空 roleForm数据
+      this.roleForm = { name: '', description: '' }
+    },
+    doAdd() {
       // 发送请求添加角色
       // 1、兜底校验
       this.$refs.roleForm.validate(async(valide) => {
@@ -169,8 +198,7 @@ export default {
           const res = await addRole(this.roleForm)
           // 提示用户
           this.$message.success(res.message)
-          // 清空表单
-          this.$refs.roleForm.resetFields()
+
           // 关闭 dialog
           this.changeIsShwoDialog(false)
           // 需求：添加成功后，跳转到最后一页
@@ -185,6 +213,24 @@ export default {
           this.pageParams.page = Math.ceil(
             this.total / this.pageParams.pagesize
           )
+          // 重新获取数据
+          this.loadRoles()
+        } catch (e) {
+          this.$message.success(e.message)
+        }
+      })
+    },
+    doEdit() {
+      // 发送请求修改( 编辑 )角色
+      // 1、兜底校验
+      this.$refs.roleForm.validate(async(valide) => {
+        if (!valide) return
+        try {
+          const res = await updateRole(this.roleForm)
+          // 提示用户
+          this.$message.success(res.message)
+          // 关闭 dialog
+          this.changeIsShwoDialog(false)
           // 重新获取数据
           this.loadRoles()
         } catch (e) {
