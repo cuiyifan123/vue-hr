@@ -15,6 +15,7 @@ export function getUser(params) {
     params
   })
 }
+
 // 删除员工
 export function removeEmployees(id) {
   return request({
@@ -22,10 +23,19 @@ export function removeEmployees(id) {
     method: 'delete'
   })
 }
+
 // 添加员工
 export function addEmployees(data) {
   return request({
     url: `/sys/user`,
+    method: 'post',
+    data
+  })
+}
+
+export function addBatchEmployees(data) {
+  return request({
+    url: `/sys/user/batch`,
     method: 'post',
     data
   })

@@ -8,7 +8,9 @@
         </template>
         <!-- 插入到right插槽位置 -->
         <template #right>
-          <el-button type="warning" size="small">导入excel</el-button>
+          <el-button type="warning" size="small">
+            <router-link to="/employees/upload-excel">导入excel</router-link>
+          </el-button>
           <el-button type="danger" size="small">导出excel</el-button>
           <el-button
             type="primary"
@@ -130,10 +132,11 @@ export default {
   },
   created() {
     this.loadUser()
-    //  监听addoredit组件派发的close事件，监听到之后关闭dialog对话框
+    //  监听addOrEdit组件派发的close事件，监听到之后关闭dialog对话框
     this.$on('close', () => {
       this.changeIsShowDialog(false)
     })
+    // 监听addOrEdit组件派发的success事件，监听到之后关闭dialog对话框，重新获取员工信息
     this.$on('success', () => {
       this.changeIsShowDialog(false)
       // 如果total 除以 size 取余等于0，表示当前页已经满了，此时在添加员工，要跳转到新的page页面，暂时刚刚添加的员工

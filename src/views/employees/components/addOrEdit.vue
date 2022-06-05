@@ -137,7 +137,7 @@ export default {
         try {
           const res = await addEmployees(this.formData)
           this.$message.success(res.message)
-          this.dispatch('employees','success')
+          this.dispatch('employees', 'success')
         } catch (e) {
           this.$message.error(e.message)
         }
