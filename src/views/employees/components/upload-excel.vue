@@ -7,6 +7,7 @@
 <script>
 // 将导入的excel中的中文标题创建一个对应英文映射表
 import { addBatchEmployees } from '@/api/employees.js'
+import { formatExcelDate } from '@/utils/formatExcelDate.js'
 
 const mapInfo = {
   '入职日期': 'timeOfEntry',
@@ -37,6 +38,7 @@ export default {
     },
     handleSuccess({ results }) {
       // 将中文标题转换为英文
+      console.log(this.transExcel(results))
       results = this.transExcel(results)
       this.addBatchEmployees(results)
     },
@@ -47,7 +49,12 @@ export default {
         //  将对象中的key全部取出来，如果key在映射表中，则添加到result对象中，并return出去
         Object.keys(item).forEach(key => {
           if (key in mapInfo) {
-            result[mapInfo[key]] = item[key]
+            // 因为 excel的时间是从1990开始计算的，js是1970年开始，时间有问题，需要转换下
+            if (key === '入职日期' || key === '转正日期') {
+              result[mapInfo[key]] = formatExcelDate(item[key])
+            } else {
+              result[mapInfo[key]] = item[key]
+            }
           }
         })
         return result
