@@ -10,7 +10,7 @@
           style="height: 40px"
         >
           <el-col :span="20">
-            <svg-icon icon-class="hongbao"/>
+            <svg-icon icon-class="hongbao" />
             <span>江苏传智播客教育科技股份有限公司</span>
           </el-col>
           <el-col :span="4">
@@ -20,7 +20,7 @@
               <!-- 下拉菜单 element -->
               <el-col>
                 <el-dropdown>
-                  <span> 操作<i class="el-icon-arrow-down"/> </span>
+                  <span> 操作<i class="el-icon-arrow-down" /> </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item
                       @click.native="showAdd('')"
@@ -51,7 +51,7 @@
                   <!-- 下拉菜单 element -->
                   <el-col>
                     <el-dropdown>
-                      <span> 操作<i class="el-icon-arrow-down"/> </span>
+                      <span> 操作<i class="el-icon-arrow-down" /> </span>
                       <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item
                           @click.native="showAdd(scope.data.id)"
@@ -84,7 +84,12 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <addOrEdit v-if="isShowAddDialog" :originList="originList" :id="curId" :is-edit="isEdit"/>
+      <addOrEdit
+        v-if="isShowAddDialog"
+        :id="curId"
+        :origin-list="originList"
+        :is-edit="isEdit"
+      />
     </el-dialog>
     <el-dialog
       title="编辑"
@@ -93,7 +98,12 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <addOrEdit v-if="isShowEditDialog" :originList="originList" :id="curId" :is-edit="isEdit"/>
+      <addOrEdit
+        v-if="isShowEditDialog"
+        :id="curId"
+        :origin-list="originList"
+        :is-edit="isEdit"
+      />
     </el-dialog>
   </div>
 </template>
