@@ -40,7 +40,6 @@ export default {
   methods: {
     async loadUserDetail() {
       const res = await getUserDetailById(this.$route.params.id)
-      // console.log(res)
       this.userInfo = res.data
     },
     async hUpdate() {
