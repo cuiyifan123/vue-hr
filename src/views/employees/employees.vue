@@ -8,10 +8,18 @@
         </template>
         <!-- 插入到right插槽位置 -->
         <template #right>
-          <el-button type="warning" size="small">
+          <el-button type="warning" size="small" icon="el-icon-document">
             <router-link to="/employees/upload-excel">导入excel</router-link>
           </el-button>
-          <el-button type="danger" size="small">导出excel</el-button>
+          <el-button
+            type="warning"
+            size="small"
+            icon="el-icon-document"
+            :loading="downloadLoading"
+            @click="handleDownload"
+          >
+            导出excel
+          </el-button>
           <el-button
             type="primary"
             size="small"
@@ -60,11 +68,7 @@
             width="140"
             align="center"
           />
-          <el-table-column
-            label="入职时间"
-            sortable
-            align="center"
-          >
+          <el-table-column label="入职时间" sortable align="center">
             <template v-slot="{ row }">
               {{ formatDate(row.timeOfEntry) }}
             </template>
@@ -94,7 +98,7 @@
         </div>
       </el-card>
       <el-dialog title="编辑" :visible.sync="isShowDialog" width="50%">
-        <add-or-edit v-if="isShowDialog"/>
+        <add-or-edit v-if="isShowDialog" />
       </el-dialog>
     </div>
   </div>
@@ -113,6 +117,18 @@ import dayjs from 'dayjs'
 const hireTypeObj = employeesConst.hireType.reduce((total, currentValue) => {
   return { ...total, [currentValue.id]: currentValue.value }
 }, {})
+const mapInfo = {
+  id: '编号',
+  password: '密码',
+  mobile: '手机号',
+  username: '姓名',
+  timeOfEntry: '入职日期',
+  formOfEmployment: '聘用形式',
+  correctionTime: '转正日期',
+  workNumber: '工号',
+  departmentName: '部门',
+  staffPhoto: '头像地址'
+}
 export default {
   components: { AddOrEdit },
   componentName: 'employees',
@@ -127,7 +143,8 @@ export default {
       rows: [],
       // 总条数
       total: 0,
-      isShowDialog: false
+      isShowDialog: false,
+      downloadLoading: false
     }
   },
   created() {
@@ -194,14 +211,55 @@ export default {
             console.log(e)
           }
         })
-        .catch(() => {
-        })
+        .catch(() => {})
     },
     changeIsShowDialog(status) {
       this.isShowDialog = status
     },
     formatDate(date) {
       return dayjs(date).format('YYYY-MM-DD')
+    },
+    async handleDownload() {
+      this.downloadLoading = true
+      // 获取所有员工信息
+      const res = await getUser({ page: 1, size: this.total })
+      const list = res.data.rows
+      // 取出一位用户的信息
+      const first = list[0]
+      if (!first) return
+      // 将用户信息的key作为excel的标题
+      const header = this.englishToChinese(first)
+      const data = this.formatData(list)
+      const excel = await import('@/vendor/Export2Excel')
+      excel.export_json_to_excel({
+        header, // excel标题,接收一个数组 ['id','密码']
+        data, // excel内容,接收一个 "二维数组" [ ['id','密码'],['id','密码'] ]
+        filename: '员工信息', // excel的文件名
+        autoWidth: true, // 宽度是否自适应
+        bookType: 'xlsx' // 导出的文件类型
+      })
+      this.downloadLoading = false
+    },
+    // 将获取的用户对象的key作为excel的标题，后台的key是英文的，将其转换为中文
+    englishToChinese(first) {
+      return Object.keys(first).map((key) => mapInfo[key])
+    },
+    // 将请求的数据格式化一下，方便写入excel
+    formatData(data) {
+      return data.map((item, index) => {
+        // 格式化时间
+        item['correctionTime'] = dayjs(item['correctionTime']).format(
+          'YYYY-MM-DD'
+        )
+        // 将编号转换为 下标
+        item['id'] = index + 1
+        // 格式化时间
+        item['timeOfEntry'] = dayjs(item['timeOfEntry']).format('YYYY-MM-DD')
+        // 将密码隐藏
+        item['password'] = '抱歉，没有权限查看'
+        item['formOfEmployment'] = hireTypeObj[item['formOfEmployment']]
+        return Object.values(item)
+      })
     }
   }
 }

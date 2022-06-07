@@ -184,7 +184,7 @@ export default {
       } catch (e) {
         // console.log('登录失败的结果:', e)
         // 提醒用失败
-        this.$message.success(e.message)
+        this.$message.error(e.message)
       }
     }
     // async testGetUserInfo() {
