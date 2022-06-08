@@ -37,10 +37,9 @@ service.interceptors.response.use(
       await store.dispatch({ type: 'user/userLogout', payload: null })
       // 但是页面刷新是在根页面的，导致传递过去的from是 /首页，所以需要获取历史记录传递给登录页
       const redirect = location.href.replace(/.+#/g, '')
-      router.push({ path: '/login', query: { redirect } })
+      router.push({ path: '/login', query: { redirect }})
     }
     return Promise.reject(reason)
   }
 )
 export default service
-

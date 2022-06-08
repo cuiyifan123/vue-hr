@@ -8,6 +8,7 @@ function dispatch(componentName, eventName, params) {
     }
   }
   if (parent) {
+    console.log(parent)
     parent.$emit(eventName, params)
   }
 }
@@ -18,7 +19,7 @@ function broadcast(componentName, eventName, params) {
     if (name === componentName) {
       child.$emit(eventName, params)
     } else {
-      broadcast.apply(child, [componentName, eventName].concat([params]))
+      broadcast.apply(child, [componentName, eventName, params])
     }
   })
 }

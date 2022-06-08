@@ -1,6 +1,10 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar"/>
+    <hamburger
+      :is-active="sidebar.opened"
+      class="hamburger-container"
+      @toggleClick="toggleSideBar"
+    />
 
     <div class="app-breadcrumb">
       江苏传智播客教育科技股份有限公司
@@ -10,23 +14,19 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="staffPhoto" class="user-avatar">
+          <img-holder :src="staffPhoto" class="user-avatar" />
           <span class="name">{{ name }}</span>
-          <i class="el-icon-caret-bottom" style="color:#fff"/>
+          <i class="el-icon-caret-bottom" style="color: #fff" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
-            <el-dropdown-item>
-              首页
-            </el-dropdown-item>
+            <el-dropdown-item> 首页 </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://gitee.com/shuiruohanyu/hrsaas53">
-            <el-dropdown-item>
-              项目地址
-            </el-dropdown-item>
+            <el-dropdown-item> 项目地址 </el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">退出登录</span>
+            <span style="display: block">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -43,11 +43,7 @@ export default {
     Hamburger
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'staffPhoto',
-      'name'
-    ])
+    ...mapGetters(['sidebar', 'staffPhoto', 'name'])
     // ...mapState({
     //   staffPhoto: state => state.user.userInfo.staffPhoto
     // })
@@ -62,11 +58,13 @@ export default {
           // 派发事件清除token和用户信息
           await this.$store.dispatch({ type: 'user/userLogout', payload: null })
           // push到登录页
-          this.$router.push({ path: '/login', query: { redirect: this.$route.fullPath }})
+          this.$router.push({
+            path: '/login',
+            query: { redirect: this.$route.fullPath }
+          })
           this.$message('退出登录成功')
         })
-        .catch(() => {
-        })
+        .catch(() => {})
     }
   }
 }
@@ -78,18 +76,18 @@ export default {
   overflow: hidden;
   position: relative;
   background: -webkit-linear-gradient(bottom, #3d6df8, #5b8cff);
-  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
   .hamburger-container {
     line-height: 46px;
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
+    transition: background 0.3s;
     -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -116,10 +114,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }

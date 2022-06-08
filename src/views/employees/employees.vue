@@ -44,7 +44,7 @@
           />
           <el-table-column label="图片" width="140" align="center">
             <template v-slot="{ row }">
-              <img class="avatar" :src="row.staffPhoto" alt="">
+              <img-holder :src="row.staffPhoto"/>
             </template>
           </el-table-column>
           <el-table-column
@@ -81,7 +81,7 @@
               >
                 查看
               </el-button>
-              <el-button type="text">分配角色</el-button>
+              <el-button type="text" @click="isShowRoleDialog = true">分配角色</el-button>
               <el-button
                 type="text"
                 @click="handleDel(row.id)"
@@ -103,7 +103,10 @@
         </div>
       </el-card>
       <el-dialog title="编辑" :visible.sync="isShowDialog" width="50%">
-        <add-or-edit v-if="isShowDialog" />
+        <add-or-edit v-if="isShowDialog"/>
+      </el-dialog>
+      <el-dialog title="查看权限" :visible.sync="isShowRoleDialog" width="50%">
+        <Role/>
       </el-dialog>
     </div>
   </div>
@@ -112,7 +115,9 @@
 import { getUser, removeEmployees } from '@/api/employees'
 import employeesConst from '@/constant/employees'
 import AddOrEdit from './components/addOrEdit.vue'
+import Role from './components/Role.vue'
 import dayjs from 'dayjs'
+import ImgHolder from '@/components/ImgHolder/index.vue'
 // 映射表
 // const hireTypeObj = {}
 // employeesConst.hireType.forEach((item) => {
@@ -135,7 +140,7 @@ const mapInfo = {
   staffPhoto: '头像地址'
 }
 export default {
-  components: { AddOrEdit },
+  components: { AddOrEdit, ImgHolder, Role },
   componentName: 'employees',
   data() {
     return {
@@ -149,7 +154,8 @@ export default {
       // 总条数
       total: 0,
       isShowDialog: false,
-      downloadLoading: false
+      downloadLoading: false,
+      isShowRoleDialog: false
     }
   },
   created() {
@@ -216,7 +222,8 @@ export default {
             console.log(e)
           }
         })
-        .catch(() => {})
+        .catch(() => {
+        })
     },
     changeIsShowDialog(status) {
       this.isShowDialog = status
