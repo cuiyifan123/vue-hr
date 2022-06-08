@@ -81,7 +81,7 @@
               >
                 查看
               </el-button>
-              <el-button type="text" @click="isShowRoleDialog = true">分配角色</el-button>
+              <el-button type="text" @click="changeIsShowRoleDialog(row.id)">分配角色</el-button>
               <el-button
                 type="text"
                 @click="handleDel(row.id)"
@@ -106,7 +106,7 @@
         <add-or-edit v-if="isShowDialog"/>
       </el-dialog>
       <el-dialog title="查看权限" :visible.sync="isShowRoleDialog" width="50%">
-        <Role/>
+        <Role :id="currId" v-if="isShowRoleDialog"/>
       </el-dialog>
     </div>
   </div>
@@ -155,7 +155,8 @@ export default {
       total: 0,
       isShowDialog: false,
       downloadLoading: false,
-      isShowRoleDialog: false
+      isShowRoleDialog: false,
+      currId: ''
     }
   },
   created() {
@@ -176,6 +177,7 @@ export default {
     })
     this.$on('roleDialogClose', () => {
       this.isShowRoleDialog = false
+      this.loadUser()
     })
   },
   methods: {
@@ -275,6 +277,10 @@ export default {
         item['formOfEmployment'] = hireTypeObj[item['formOfEmployment']]
         return Object.values(item)
       })
+    },
+    changeIsShowRoleDialog(id) {
+      this.currId = id
+      this.isShowRoleDialog = true
     }
   }
 }
