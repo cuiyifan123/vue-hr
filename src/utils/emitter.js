@@ -8,7 +8,6 @@ function dispatch(componentName, eventName, params) {
     }
   }
   if (parent) {
-    console.log(parent)
     parent.$emit(eventName, params)
   }
 }

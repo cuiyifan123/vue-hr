@@ -174,6 +174,9 @@ export default {
       this.pageParams.page = Math.ceil(this.total / this.pageParams.size)
       this.loadUser()
     })
+    this.$on('roleDialogClose', () => {
+      this.isShowRoleDialog = false
+    })
   },
   methods: {
     async loadUser() {
