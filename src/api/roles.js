@@ -15,6 +15,7 @@ export function removeRole(id) {
     url: `/sys/role/${id}`
   })
 }
+
 // 添加角色
 export function addRole(data) {
   return request({
@@ -30,5 +31,19 @@ export function updateRole(data) {
     method: 'put',
     url: `/sys/role/${data.id}`,
     data
+  })
+}
+
+export function updateRolePermission(data) {
+  return request({
+    method: 'put',
+    url: '/sys/role/assignPrem',
+    data
+  })
+}
+export function getRolePermissionById(id) {
+  return request({
+    method: 'get',
+    url: `/sys/role/${id}`
   })
 }

@@ -1,13 +1,13 @@
 <template>
   <el-form ref="form" :model="formData" label-width="100px" :rules="rules">
     <el-form-item label="权限名称" prop="name">
-      <el-input v-model="formData.name"/>
+      <el-input v-model="formData.name" />
     </el-form-item>
     <el-form-item label="权限标识" prop="code">
-      <el-input v-model="formData.code"/>
+      <el-input v-model="formData.code" />
     </el-form-item>
     <el-form-item label="权限描述" prop="description">
-      <el-input v-model="formData.description"/>
+      <el-input v-model="formData.description" />
     </el-form-item>
     <el-form-item label="权限启用">
       <el-switch
@@ -49,12 +49,8 @@ export default {
         description: ''
       },
       rules: {
-        name: [
-          { required: true, message: '权限名称必填项', trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: '权限标识必填项', trigger: 'blur' }
-        ],
+        name: [{ required: true, message: '权限名称必填项', trigger: 'blur' }],
+        code: [{ required: true, message: '权限标识必填项', trigger: 'blur' }],
         description: [
           { required: true, message: '权限描述必填项', trigger: 'blur' }
         ]
@@ -69,7 +65,7 @@ export default {
   },
   methods: {
     handleClick() {
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate((valid) => {
         if (!valid) return
         this.dispatch('permissions', this.action, this.formData)
       })

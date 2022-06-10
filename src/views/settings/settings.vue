@@ -17,22 +17,24 @@
             </el-row>
             <!-- 表格 -->
             <el-table :data="rows" border>
-              <el-table-column label="序号" width="120" type="index" />
-              <el-table-column label="角色名称" width="240" prop="name" />
-              <el-table-column label="描述" prop="description" />
+              <el-table-column label="序号" width="120" type="index"/>
+              <el-table-column label="角色名称" width="240" prop="name"/>
+              <el-table-column label="描述" prop="description"/>
               <el-table-column label="操作" width="300">
                 <template v-slot="{ row }">
-                  <el-button size="small" type="success">分配权限</el-button>
+                  <el-button size="small" type="success" @click="handleAssignPermission(row.id)">分配权限</el-button>
                   <el-button
                     size="small"
                     type="primary"
                     @click="handleEdit(row)"
-                  >编辑</el-button>
+                  >编辑
+                  </el-button>
                   <el-button
                     size="small"
                     type="danger"
                     @click="removeRole(row)"
-                  >删除</el-button>
+                  >删除
+                  </el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -69,10 +71,10 @@
             label-width="100px"
           >
             <el-form-item label="角色名称" prop="name">
-              <el-input v-model="roleForm.name" />
+              <el-input v-model="roleForm.name"/>
             </el-form-item>
             <el-form-item label="角色描述" prop="description">
-              <el-input v-model="roleForm.description" />
+              <el-input v-model="roleForm.description"/>
             </el-form-item>
           </el-form>
           <!-- 底部 -->
@@ -81,14 +83,24 @@
               <el-button
                 size="small"
                 @click="changeIsShwoDialog(false)"
-              >取消</el-button>
+              >取消
+              </el-button>
               <el-button
                 size="small"
                 type="primary"
                 @click="handleSubmit"
-              >确定</el-button>
+              >确定
+              </el-button>
             </el-col>
           </el-row>
+        </el-dialog>
+        <el-dialog
+          :title="'分配权限'"
+          :close-on-click-modal="false"
+          :close-on-press-escape="false"
+          :visible.sync="showAssignPermissionDialog"
+        >
+          <assignPermission v-if="showAssignPermissionDialog" :id="curId" @closeAssign="closeAssign"/>
         </el-dialog>
       </el-card>
     </div>
@@ -96,8 +108,12 @@
 </template>
 <script>
 import { addRole, getRoles, removeRole, updateRole } from '@/api/roles.js'
+import assignPermission from './assignPermission.vue'
 
 export default {
+  components: {
+    assignPermission
+  },
   data() {
     return {
       pageParams: { page: 1, pagesize: 2 },
@@ -117,7 +133,9 @@ export default {
           { required: true, message: '角色名称为必填项', trigger: 'blur' }
         ]
       },
-      isEdit: false
+      isEdit: false,
+      showAssignPermissionDialog: false,
+      curId: ''
     }
   },
   created() {
@@ -160,10 +178,11 @@ export default {
             this.$message.error(e.message)
           }
         })
-        .catch(() => {})
+        .catch(() => {
+        })
     },
     // 改变是否显示dialog对话框 ”状态“ 的函数
-    changeIsShwoDialog(status) {
+    changeIsShowDialog(status) {
       this.showDialog = status
     },
     handleSubmit() {
@@ -174,21 +193,24 @@ export default {
     handleAdd() {
       this.isEdit = false
       // dialog显示
-      this.changeIsShwoDialog(true)
+      this.changeIsShowDialog(true)
     },
     //  点击编辑按钮处理函数
     handleEdit(row) {
       this.isEdit = true
       // dialog显示
-      this.changeIsShwoDialog(true)
+      this.changeIsShowDialog(true)
       this.roleForm = { ...row }
     },
     // dialog关闭后，清空表单数据
     dialogClosed() {
-      // 重置表单
-      this.$refs.roleForm.resetFields()
+
       // 清空 roleForm数据
       this.roleForm = { name: '', description: '' }
+      // 重置表单
+      this.$nextTick(() => {
+        this.$refs.roleForm.resetFields()
+      })
     },
     doAdd() {
       // 发送请求添加角色
@@ -201,7 +223,7 @@ export default {
           this.$message.success(res.message)
 
           // 关闭 dialog
-          this.changeIsShwoDialog(false)
+          this.changeIsShowDialog(false)
           // 需求：添加成功后，跳转到最后一页
           /*
               解决思路：
@@ -231,13 +253,20 @@ export default {
           // 提示用户
           this.$message.success(res.message)
           // 关闭 dialog
-          this.changeIsShwoDialog(false)
+          this.changeIsShowDialog(false)
           // 重新获取数据
           this.loadRoles()
         } catch (e) {
           this.$message.success(e.message)
         }
       })
+    },
+    handleAssignPermission(id) {
+      this.curId = id
+      this.showAssignPermissionDialog = true
+    },
+    closeAssign() {
+      this.showAssignPermissionDialog = false
     }
   }
 }

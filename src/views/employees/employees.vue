@@ -32,6 +32,7 @@
         <el-table :data="rows" style="width: 100%" border>
           <el-table-column
             type="index"
+            :index="indexMethod"
             label="序号"
             width="100"
             align="center"
@@ -44,7 +45,7 @@
           />
           <el-table-column label="图片" width="140" align="center">
             <template v-slot="{ row }">
-              <img-holder :src="row.staffPhoto"/>
+              <img-holder :src="row.staffPhoto" />
             </template>
           </el-table-column>
           <el-table-column
@@ -81,7 +82,10 @@
               >
                 查看
               </el-button>
-              <el-button type="text" @click="changeIsShowRoleDialog(row.id)">分配角色</el-button>
+              <el-button
+                type="text"
+                @click="changeIsShowRoleDialog(row.id)"
+              >分配角色</el-button>
               <el-button
                 type="text"
                 @click="handleDel(row.id)"
@@ -103,10 +107,10 @@
         </div>
       </el-card>
       <el-dialog title="编辑" :visible.sync="isShowDialog" width="50%">
-        <add-or-edit v-if="isShowDialog"/>
+        <add-or-edit v-if="isShowDialog" />
       </el-dialog>
       <el-dialog title="查看权限" :visible.sync="isShowRoleDialog" width="50%">
-        <Role :id="currId" v-if="isShowRoleDialog"/>
+        <Role v-if="isShowRoleDialog" :id="currId" />
       </el-dialog>
     </div>
   </div>
@@ -157,6 +161,11 @@ export default {
       downloadLoading: false,
       isShowRoleDialog: false,
       currId: ''
+    }
+  },
+  computed: {
+    indexMethod() {
+      return (this.pageParams.page - 1) * this.pageParams.size + 1
     }
   },
   created() {
@@ -227,8 +236,7 @@ export default {
             console.log(e)
           }
         })
-        .catch(() => {
-        })
+        .catch(() => {})
     },
     changeIsShowDialog(status) {
       this.isShowDialog = status

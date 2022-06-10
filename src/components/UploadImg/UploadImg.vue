@@ -17,8 +17,8 @@
 import COS from 'cos-js-sdk-v5'
 // 填写自己腾讯云cos中的key和id (密钥)
 const cos = new COS({
-  SecretId: 'AKIDoOjphJfmcDZpnSpug9KCm31g38tMWOyG', // 身份识别ID
-  SecretKey: '4pHRIr75k6AvNWnoXzB6j34oHTO3QUGj' // 身份秘钥
+  SecretId: 'AKIDYvqb9UZPBF6k9PQFsHSt76VihaJriRzV', // 身份识别ID
+  SecretKey: 'lPuDLKJSRD7su1yiHbhaFsNhngMp8HF5' // 身份秘钥
 })
 export default {
   props: {
