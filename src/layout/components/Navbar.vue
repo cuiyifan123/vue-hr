@@ -14,16 +14,16 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img-holder :src="staffPhoto" class="user-avatar" />
+          <img-holder :src="staffPhoto" class="user-avatar"/>
           <span class="name">{{ name }}</span>
-          <i class="el-icon-caret-bottom" style="color: #fff" />
+          <i class="el-icon-caret-bottom" style="color: #fff"/>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
-            <el-dropdown-item> 首页 </el-dropdown-item>
+            <el-dropdown-item> 首页</el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://gitee.com/shuiruohanyu/hrsaas53">
-            <el-dropdown-item> 项目地址 </el-dropdown-item>
+            <el-dropdown-item> 项目地址</el-dropdown-item>
           </a>
           <el-dropdown-item divided @click.native="logout">
             <span style="display: block">退出登录</span>
@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import { resetRouter } from '@/router'
 import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
 
@@ -63,8 +64,11 @@ export default {
             query: { redirect: this.$route.fullPath }
           })
           this.$message('退出登录成功')
+          this.$store.commit('menu/resetMenus')
+          resetRouter()
         })
-        .catch(() => {})
+        .catch(() => {
+        })
     }
   }
 }

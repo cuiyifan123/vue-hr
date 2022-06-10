@@ -204,7 +204,6 @@ export default {
     },
     // dialog关闭后，清空表单数据
     dialogClosed() {
-
       // 清空 roleForm数据
       this.roleForm = { name: '', description: '' }
       // 重置表单

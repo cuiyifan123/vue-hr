@@ -15,6 +15,7 @@ const actions = {
     const res1 = await getInfoApi()
     const res2 = await getUserDetailById(res1.data.userId)
     commit('setUserInfo', Object.assign(res1.data, res2.data))
+    return { ...res1.data, ...res2.data }
   },
   userLogout({ commit }) {
     // 清空token

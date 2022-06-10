@@ -1,4 +1,4 @@
-import router from './router'
+import router, { asyncRoutes } from './router'
 import store from './store'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css'
@@ -12,7 +12,15 @@ router.beforeEach(async(to, from, next) => {
   if (token) {
     if (!name) {
       try {
-        await store.dispatch({ type: 'user/getUserInfo', payload: null })
+        const res = await store.dispatch({ type: 'user/getUserInfo', payload: null })
+        const menus = res.roles.menus
+        const filteredMenus = asyncRoutes.filter(item => menus.includes(item.children[0].name))
+        router.addRoutes([...filteredMenus, { path: '*', redirect: '/404', hidden: true }])
+        store.commit('menu/setMenus', filteredMenus)
+        next({
+          ...to,
+          replace: true
+        })
       } catch (e) {
         console.log(e)
       }
