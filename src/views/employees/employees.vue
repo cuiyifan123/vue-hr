@@ -12,6 +12,7 @@
             <router-link to="/employees/upload-excel">导入excel</router-link>
           </el-button>
           <el-button
+            v-allow="'export_excel'"
             type="warning"
             size="small"
             icon="el-icon-document"

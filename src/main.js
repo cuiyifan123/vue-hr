@@ -29,6 +29,17 @@ Vue.component('PageTools', PageTools)
 Vue.component('Excel', Excel)
 Vue.component('UploadImg', UploadImg)
 Vue.component(ImgHolder.name, ImgHolder)
+Vue.directive('allow', {
+  inserted(el, binding) {
+    const value = binding.value
+    const points = store.state.user.userInfo.roles.points
+    // 如果当前的value不在数组里面，表示这个用户没有这个按钮权限
+    if (!points.includes(value)) {
+      console.log(1)
+      el.remove()
+    }
+  }
+})
 new Vue({
   el: '#app',
   router,
