@@ -7,16 +7,18 @@
     />
 
     <div class="app-breadcrumb">
-      江苏传智播客教育科技股份有限公司
+      {{ $t('companyName') }}
       <span class="breadBtn">体验版</span>
     </div>
 
     <div class="right-menu">
+      <screen-full />
+      <lang class="right-menu-item" />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img-holder :src="staffPhoto" class="user-avatar"/>
+          <img-holder :src="staffPhoto" class="user-avatar" />
           <span class="name">{{ name }}</span>
-          <i class="el-icon-caret-bottom" style="color: #fff"/>
+          <i class="el-icon-caret-bottom" style="color: #fff" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
@@ -67,8 +69,7 @@ export default {
           this.$store.commit('menu/resetMenus')
           resetRouter()
         })
-        .catch(() => {
-        })
+        .catch(() => {})
     }
   }
 }
