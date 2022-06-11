@@ -10,10 +10,9 @@
 </template>
 <script>
 export default {
-  props: {
-    curDate: {
-      type: Object,
-      default: new Date()
+  data() {
+    return {
+      curDate: new Date()
     }
   },
   methods: {

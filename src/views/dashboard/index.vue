@@ -29,7 +29,7 @@
             <span>工作日历</span>
           </div>
           <!-- 放置日历组件 -->
-          <calendar :cur-date="curDate" />
+          <calendar />
         </el-card>
         <!-- 公告 -->
         <el-card class="box-card">
@@ -98,6 +98,7 @@
             <span>绩效指数</span>
           </div>
           <!-- 放置雷达图 -->
+          <radar />
         </el-card>
         <!-- 帮助连接 -->
         <el-card class="box-card">
@@ -133,14 +134,14 @@
 </template>
 <script>
 import calendar from './calender.vue'
+import radar from './radar.vue'
 export default {
   components: {
-    calendar
+    calendar,
+    radar
   },
   data() {
-    return {
-      curDate: new Date()
-    }
+    return {}
   }
 }
 </script>
